@@ -1,0 +1,21 @@
+<a routerLink="/solicitudes">&larr; Volver al listado</a>
+
+@if (solicitud(); as s) {
+  <h2>{{ s.titulo }}</h2>
+  <dl>
+    <dt>Id</dt>
+    <dd>{{ s.id }}</dd>
+    <dt>Solicitante</dt>
+    <dd>{{ s.solicitante }}</dd>
+    <dt>Estado</dt>
+    <dd><span class="estado" [class]="s.estado">{{ textoEstado[s.estado] }}</span></dd>
+    <dt>Fecha de creación</dt>
+    <dd>{{ s.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</dd>
+    <dt>Descripción</dt>
+    <dd>{{ s.descripcion || 'Sin descripción' }}</dd>
+  </dl>
+} @else if (error()) {
+  <p class="mensaje-error">{{ error() }}</p>
+} @else {
+  <p>Cargando solicitud...</p>
+}

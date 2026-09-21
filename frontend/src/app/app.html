@@ -1,8 +1,11 @@
 <header>
   <h1>{{ titulo }}</h1>
+  <nav>
+    <a routerLink="/solicitudes">Listado</a>
+  </nav>
 </header>
 
 <main>
-  <!-- Componente hijo: se usa con la etiqueta de su "selector" -->
-  <app-solicitud-lista />
+  <!-- Aquí se pinta el componente que corresponde a la URL actual -->
+  <router-outlet />
 </main>

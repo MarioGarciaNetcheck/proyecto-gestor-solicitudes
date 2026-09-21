@@ -1,56 +1,37 @@
 import { DatePipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { Solicitud, TEXTO_ESTADO } from '../solicitud.model';
+import { SolicitudService } from '../solicitud.service';
 
 @Component({
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   selector: 'app-solicitud-lista',
   styleUrl: './solicitud-lista.css',
   templateUrl: './solicitud-lista.html',
 })
-export class SolicitudLista {
-  // signal(): valor que, al cambiar, actualiza la pantalla.
+export class SolicitudLista implements OnInit {
+  private readonly servicio = inject(SolicitudService);
+
+  // signal(): valor que, al cambiar con set(), actualiza la pantalla.
   // En la plantilla se lee llamándolo como una función: solicitudes()
-  // De momento son datos escritos a mano; en la sesión 7 llegarán de la API.
-  protected readonly solicitudes = signal<Solicitud[]>([
-    {
-      id: 1,
-      titulo: 'Alta de usuario en la intranet',
-      descripcion: 'Necesito acceso a la intranet para el nuevo compañero de administración.',
-      solicitante: 'ana',
-      estado: 'PENDIENTE',
-      fechaCreacion: '2026-10-05T09:15:00',
-    },
-    {
-      id: 2,
-      titulo: 'Cambio de monitor',
-      descripcion: 'El monitor del puesto 12 parpadea desde el lunes.',
-      solicitante: 'luis',
-      estado: 'EN_CURSO',
-      fechaCreacion: '2026-10-05T10:30:00',
-    },
-  ]);
+  protected readonly solicitudes = signal<Solicitud[]>([]);
+  protected readonly cargando = signal(true);
+  protected readonly error = signal('');
 
   protected readonly textoEstado = TEXTO_ESTADO;
 
-  // Evento (click): añade una solicitud de ejemplo a la lista
-  protected anadirEjemplo(): void {
-    const siguienteId = this.solicitudes().length + 1;
-    const nueva: Solicitud = {
-      id: siguienteId,
-      titulo: `Solicitud de ejemplo ${siguienteId}`,
-      descripcion: null,
-      solicitante: 'ana',
-      estado: 'PENDIENTE',
-      fechaCreacion: new Date().toISOString(),
-    };
-    // update(): calcula el nuevo valor a partir del anterior
-    this.solicitudes.update((lista) => [...lista, nueva]);
-  }
-
-  // Evento (click): vacía la lista para ver el bloque @empty
-  protected vaciar(): void {
-    this.solicitudes.set([]);
+  ngOnInit(): void {
+    this.servicio.listar().subscribe({
+      next: (datos) => {
+        this.solicitudes.set(datos);
+        this.cargando.set(false);
+      },
+      error: () => {
+        this.error.set('No se han podido cargar las solicitudes. ¿Está arrancada la API?');
+        this.cargando.set(false);
+      },
+    });
   }
 }

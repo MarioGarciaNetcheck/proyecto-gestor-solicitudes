@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-
-import { SolicitudLista } from './solicitudes/solicitud-lista/solicitud-lista';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [SolicitudLista],
+  imports: [RouterOutlet, RouterLink],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

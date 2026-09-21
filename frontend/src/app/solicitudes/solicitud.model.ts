@@ -1,8 +1,8 @@
-// Modelos TypeScript: describen la forma de los datos de una solicitud.
+// Modelos TypeScript: describen la forma del JSON que intercambiamos con la API.
 
 export type EstadoSolicitud = 'PENDIENTE' | 'EN_CURSO' | 'RESUELTA';
 
-// Coincide con el JSON que devuelve la API (SolicitudResponse en Spring Boot)
+// Lo que devuelve la API (coincide con SolicitudResponse en Spring Boot)
 export interface Solicitud {
   id: number;
   titulo: string;
