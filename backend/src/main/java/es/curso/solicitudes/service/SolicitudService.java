@@ -40,9 +40,9 @@ public class SolicitudService {
 	@Transactional
 	public SolicitudResponse crear(SolicitudRequest datos) {
 		Solicitud nueva = new Solicitud(
-				datos.titulo(),
+				datos.titulo().trim(),
 				datos.descripcion(),
-				datos.solicitante());
+				datos.solicitante().trim());
 		return SolicitudResponse.desde(repositorio.save(nueva));
 	}
 

@@ -3,6 +3,8 @@ package es.curso.solicitudes.error;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,10 +19,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 /**
  * Tratamiento centralizado de errores.
- * Todas las respuestas de error siguen el formato estándar ProblemDetail (RFC 9457).
+ * Todas las respuestas de error siguen el formato estándar ProblemDetail (RFC 9457)
+ * y nunca incluyen trazas ni detalles internos.
  */
 @RestControllerAdvice
 public class GestorErroresApi extends ResponseEntityExceptionHandler {
+
+	private static final Logger log = LoggerFactory.getLogger(GestorErroresApi.class);
 
 	// 404: la solicitud pedida no existe
 	@ExceptionHandler(SolicitudNoEncontradaException.class)
@@ -51,6 +56,16 @@ public class GestorErroresApi extends ResponseEntityExceptionHandler {
 		problema.setTitle("Error de validación");
 		problema.setProperty("errores", errores);
 		return ResponseEntity.badRequest().body(problema);
+	}
+
+	// 500: cualquier error no previsto. El detalle va al log del servidor, no al cliente.
+	@ExceptionHandler(Exception.class)
+	public ProblemDetail errorInesperado(Exception ex) {
+		log.error("Error no controlado", ex);
+		ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
+				"Se ha producido un error interno. Inténtelo más tarde.");
+		problema.setTitle("Error interno");
+		return problema;
 	}
 
 }
