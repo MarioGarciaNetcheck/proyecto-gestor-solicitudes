@@ -37,10 +37,8 @@ public class SolicitudController {
 
 	// GET /api/solicitudes/5 -> 200 con la solicitud, o 404 si no existe
 	@GetMapping("/{id}")
-	public ResponseEntity<SolicitudResponse> obtener(@PathVariable Long id) {
-		return servicio.obtener(id)
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
+	public SolicitudResponse obtener(@PathVariable Long id) {
+		return servicio.obtener(id);
 	}
 
 	// POST /api/solicitudes -> 201 con la solicitud creada, o 400 si los datos no son válidos
