@@ -12,6 +12,13 @@ export interface Solicitud {
   fechaCreacion: string;
 }
 
+// Lo que enviamos para dar de alta (coincide con SolicitudRequest en Spring Boot)
+export interface NuevaSolicitud {
+  titulo: string;
+  descripcion: string;
+  solicitante: string;
+}
+
 // Texto que se muestra al usuario para cada estado
 export const TEXTO_ESTADO: Record<EstadoSolicitud, string> = {
   PENDIENTE: 'Pendiente',

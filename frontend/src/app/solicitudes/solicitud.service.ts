@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Solicitud } from './solicitud.model';
+import { NuevaSolicitud, Solicitud } from './solicitud.model';
 
 /**
  * Servicio: concentra las llamadas HTTP a la API de solicitudes.
@@ -21,5 +21,9 @@ export class SolicitudService {
 
   obtener(id: number): Observable<Solicitud> {
     return this.http.get<Solicitud>(`${this.url}/${id}`);
+  }
+
+  crear(datos: NuevaSolicitud): Observable<Solicitud> {
+    return this.http.post<Solicitud>(this.url, datos);
   }
 }

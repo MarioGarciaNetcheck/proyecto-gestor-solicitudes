@@ -1,0 +1,35 @@
+<a routerLink="/solicitudes">&larr; Volver al listado</a>
+
+<h2>Nueva solicitud</h2>
+
+<form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+  <label for="titulo">Título *</label>
+  <input id="titulo" type="text" formControlName="titulo" />
+  @if (campoNoValido('titulo')) {
+    <p class="mensaje-error">El título es obligatorio y debe tener entre 3 y 100 caracteres.</p>
+  }
+
+  <label for="descripcion">Descripción</label>
+  <textarea id="descripcion" rows="4" formControlName="descripcion"></textarea>
+  @if (campoNoValido('descripcion')) {
+    <p class="mensaje-error">La descripción no puede superar los 1000 caracteres.</p>
+  }
+
+  <label for="solicitante">Solicitante *</label>
+  <input id="solicitante" type="text" formControlName="solicitante" />
+  @if (campoNoValido('solicitante')) {
+    <p class="mensaje-error">El solicitante es obligatorio (máximo 50 caracteres).</p>
+  }
+
+  @for (mensaje of erroresServidor(); track mensaje) {
+    <p class="mensaje-error">{{ mensaje }}</p>
+  }
+
+  <button type="submit" class="boton" [disabled]="enviando()">
+    @if (enviando()) {
+      Guardando...
+    } @else {
+      Guardar
+    }
+  </button>
+</form>
