@@ -1,19 +1,76 @@
 {
   "info": {
     "name": "Gestor de solicitudes",
-    "description": "Peticiones del curso Spring Boot + Angular (antes de añadir seguridad).",
+    "description": "Peticiones del curso Spring Boot + Angular. Primero ejecutar un login: el token se guarda solo en la variable {{token}} y se envía en el resto de peticiones.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
   "variable": [
-    { "key": "base", "value": "http://localhost:8080" }
+    { "key": "base", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
   ],
   "item": [
     {
-      "name": "1. Saludo",
-      "request": { "method": "GET", "url": "{{base}}/api/saludo" }
+      "name": "1. Saludo (sin login)",
+      "request": {
+        "auth": { "type": "noauth" },
+        "method": "GET",
+        "url": "{{base}}/api/saludo"
+      }
     },
     {
-      "name": "2. Solicitudes",
+      "name": "2. Login",
+      "item": [
+        {
+          "name": "Login ana (USUARIO)",
+          "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('token', pm.response.json().token);"] } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"ana\",\n  \"contrasena\": \"ana123\"\n}" },
+            "url": "{{base}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login luis (USUARIO)",
+          "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('token', pm.response.json().token);"] } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"luis\",\n  \"contrasena\": \"luis123\"\n}" },
+            "url": "{{base}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login admin (ADMIN)",
+          "event": [{ "listen": "test", "script": { "exec": ["pm.collectionVariables.set('token', pm.response.json().token);"] } }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"admin\",\n  \"contrasena\": \"admin123\"\n}" },
+            "url": "{{base}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login con contraseña incorrecta (401)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"usuario\": \"ana\",\n  \"contrasena\": \"incorrecta\"\n}" },
+            "url": "{{base}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Solicitudes",
       "item": [
         {
           "name": "Listar",
@@ -32,7 +89,7 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Cambio de teclado\",\n  \"descripcion\": \"Faltan teclas en el puesto 7.\",\n  \"solicitante\": \"luis\"\n}" },
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Cambio de teclado\",\n  \"descripcion\": \"Faltan teclas en el puesto 7.\"\n}" },
             "url": "{{base}}/api/solicitudes"
           }
         },
@@ -41,8 +98,48 @@
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"Sin título\",\n  \"solicitante\": \"\"\n}" },
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"Angular no dejaría enviar esto, pero Postman sí\"\n}" },
             "url": "{{base}}/api/solicitudes"
+          }
+        },
+        {
+          "name": "Cambiar estado (solo ADMIN, 403 para el resto)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"EN_CURSO\"\n}" },
+            "url": "{{base}}/api/solicitudes/1/estado"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Demos de seguridad (perfil demo-inseguro)",
+      "description": "Solo funcionan si la API se arranca con el perfil demo-inseguro. Hacer login como luis antes.",
+      "item": [
+        {
+          "name": "SQL injection - consulta insegura",
+          "request": { "method": "GET", "url": "{{base}}/api/demo/buscar-inseguro?texto=%25'%20OR%201%3D1%20--" }
+        },
+        {
+          "name": "SQL injection - consulta con parámetros",
+          "request": { "method": "GET", "url": "{{base}}/api/demo/buscar-seguro?texto=%25'%20OR%201%3D1%20--" }
+        },
+        {
+          "name": "IDOR - ver solicitud ajena sin comprobación",
+          "request": { "method": "GET", "url": "{{base}}/api/demo/solicitudes/1" }
+        },
+        {
+          "name": "IDOR - endpoint correcto (403)",
+          "request": { "method": "GET", "url": "{{base}}/api/solicitudes/1" }
+        },
+        {
+          "name": "Bypass de validación - alta sin @Valid",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"Se ha colado un título vacío\"\n}" },
+            "url": "{{base}}/api/demo/solicitudes"
           }
         }
       ]

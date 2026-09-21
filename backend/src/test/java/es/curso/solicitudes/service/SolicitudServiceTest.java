@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import es.curso.solicitudes.dto.SolicitudRequest;
 import es.curso.solicitudes.dto.SolicitudResponse;
+import es.curso.solicitudes.error.AccesoDenegadoException;
 import es.curso.solicitudes.error.SolicitudNoEncontradaException;
 import es.curso.solicitudes.model.EstadoSolicitud;
 import es.curso.solicitudes.model.Solicitud;
@@ -34,13 +35,13 @@ class SolicitudServiceTest {
 	private SolicitudService servicio;
 
 	@Test
-	void crearDejaLaSolicitudPendienteYSinEspaciosSobrantes() {
+	void crearDejaLaSolicitudPendienteYAsignadaAlUsuario() {
 		// Preparar: el repositorio devuelve lo mismo que recibe
 		when(repositorio.save(any(Solicitud.class))).thenAnswer(invocacion -> invocacion.getArgument(0));
-		SolicitudRequest datos = new SolicitudRequest("  Cambio de monitor  ", "Parpadea", " luis ");
+		SolicitudRequest datos = new SolicitudRequest("  Cambio de monitor  ", "Parpadea");
 
 		// Ejecutar
-		SolicitudResponse creada = servicio.crear(datos);
+		SolicitudResponse creada = servicio.crear(datos, "luis");
 
 		// Comprobar
 		assertThat(creada.titulo()).isEqualTo("Cambio de monitor");
@@ -53,8 +54,25 @@ class SolicitudServiceTest {
 	void obtenerUnaSolicitudInexistenteLanzaExcepcion() {
 		when(repositorio.findById(99L)).thenReturn(Optional.empty());
 
-		assertThatThrownBy(() -> servicio.obtener(99L))
+		assertThatThrownBy(() -> servicio.obtener(99L, "ana", false))
 				.isInstanceOf(SolicitudNoEncontradaException.class);
+	}
+
+	@Test
+	void unUsuarioNoPuedeVerSolicitudesAjenas() {
+		Solicitud deAna = new Solicitud("Cambio de monitor", null, "ana");
+		when(repositorio.findById(1L)).thenReturn(Optional.of(deAna));
+
+		assertThatThrownBy(() -> servicio.obtener(1L, "luis", false))
+				.isInstanceOf(AccesoDenegadoException.class);
+	}
+
+	@Test
+	void unAdminPuedeVerCualquierSolicitud() {
+		Solicitud deAna = new Solicitud("Cambio de monitor", null, "ana");
+		when(repositorio.findById(1L)).thenReturn(Optional.of(deAna));
+
+		assertThat(servicio.obtener(1L, "admin", true).solicitante()).isEqualTo("ana");
 	}
 
 }

@@ -1,8 +1,14 @@
 <header>
   <h1>{{ titulo }}</h1>
   <nav>
-    <a routerLink="/solicitudes">Listado</a>
-    <a routerLink="/solicitudes/nueva">Nueva solicitud</a>
+    @if (auth.sesion(); as sesion) {
+      <a routerLink="/solicitudes">Listado</a>
+      <a routerLink="/solicitudes/nueva">Nueva solicitud</a>
+      <span class="usuario">{{ sesion.usuario }} ({{ sesion.roles.join(', ') }})</span>
+      <button type="button" class="enlace" (click)="salir()">Salir</button>
+    } @else {
+      <a routerLink="/login">Iniciar sesión</a>
+    }
   </nav>
 </header>
 

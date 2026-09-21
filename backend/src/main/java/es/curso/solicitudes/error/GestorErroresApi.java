@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -32,6 +33,24 @@ public class GestorErroresApi extends ResponseEntityExceptionHandler {
 	public ProblemDetail noEncontrada(SolicitudNoEncontradaException ex) {
 		ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
 		problema.setTitle("Solicitud no encontrada");
+		return problema;
+	}
+
+	// 403: el usuario está autenticado pero el recurso no es suyo
+	@ExceptionHandler(AccesoDenegadoException.class)
+	public ProblemDetail accesoDenegado(AccesoDenegadoException ex) {
+		ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, ex.getMessage());
+		problema.setTitle("Acceso denegado");
+		return problema;
+	}
+
+	// 401: usuario o contraseña incorrectos en el login.
+	// El mensaje no indica cuál de los dos ha fallado, para no dar pistas a un atacante.
+	@ExceptionHandler(AuthenticationException.class)
+	public ProblemDetail loginIncorrecto(AuthenticationException ex) {
+		ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED,
+				"Usuario o contraseña incorrectos");
+		problema.setTitle("No autenticado");
 		return problema;
 	}
 

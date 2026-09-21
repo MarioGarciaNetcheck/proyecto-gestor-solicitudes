@@ -26,17 +26,13 @@ export class SolicitudAlta {
       nonNullable: true,
       validators: [Validators.maxLength(1000)],
     }),
-    solicitante: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.maxLength(50)],
-    }),
   });
 
   protected readonly enviando = signal(false);
   protected readonly erroresServidor = signal<string[]>([]);
 
   // Muestra el error de un campo solo cuando el usuario ya lo ha tocado
-  protected campoNoValido(nombre: 'titulo' | 'descripcion' | 'solicitante'): boolean {
+  protected campoNoValido(nombre: 'titulo' | 'descripcion'): boolean {
     const campo = this.formulario.controls[nombre];
     return campo.invalid && campo.touched;
   }
@@ -57,6 +53,8 @@ export class SolicitudAlta {
         if (respuesta.status === 400 && respuesta.error?.errores) {
           // Errores de validación que devuelve Spring Boot: { campo: mensaje }
           this.erroresServidor.set(Object.values(respuesta.error.errores));
+        } else if (respuesta.status === 401) {
+          this.erroresServidor.set(['Su sesión no es válida o ha caducado. Inicie sesión de nuevo.']);
         } else {
           this.erroresServidor.set(['No se ha podido guardar la solicitud. Inténtelo de nuevo.']);
         }

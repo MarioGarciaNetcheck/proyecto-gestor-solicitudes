@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -28,8 +29,12 @@ export class SolicitudLista implements OnInit {
         this.solicitudes.set(datos);
         this.cargando.set(false);
       },
-      error: () => {
-        this.error.set('No se han podido cargar las solicitudes. ¿Está arrancada la API?');
+      error: (respuesta: HttpErrorResponse) => {
+        this.error.set(
+          respuesta.status === 401
+            ? 'Debe iniciar sesión para ver las solicitudes.'
+            : 'No se han podido cargar las solicitudes. ¿Está arrancada la API?',
+        );
         this.cargando.set(false);
       },
     });

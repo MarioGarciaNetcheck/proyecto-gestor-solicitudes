@@ -35,9 +35,40 @@ header h1 {
   font-size: 1.3rem;
 }
 
-header nav a {
+header nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+header nav a,
+header nav .enlace {
   color: white;
-  margin-left: 1rem;
+}
+
+.usuario {
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.enlace {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+select {
+  padding: 0.3rem;
+  font: inherit;
+}
+
+.nota {
+  margin-top: 1.5rem;
+  color: var(--gris);
+  font-size: 0.9rem;
 }
 
 main {

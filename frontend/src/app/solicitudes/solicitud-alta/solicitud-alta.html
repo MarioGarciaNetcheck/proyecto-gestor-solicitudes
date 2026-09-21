@@ -15,12 +15,6 @@
     <p class="mensaje-error">La descripción no puede superar los 1000 caracteres.</p>
   }
 
-  <label for="solicitante">Solicitante *</label>
-  <input id="solicitante" type="text" formControlName="solicitante" />
-  @if (campoNoValido('solicitante')) {
-    <p class="mensaje-error">El solicitante es obligatorio (máximo 50 caracteres).</p>
-  }
-
   @for (mensaje of erroresServidor(); track mensaje) {
     <p class="mensaje-error">{{ mensaje }}</p>
   }

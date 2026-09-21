@@ -12,12 +12,14 @@ export interface Solicitud {
   fechaCreacion: string;
 }
 
-// Lo que enviamos para dar de alta (coincide con SolicitudRequest en Spring Boot)
+// Lo que enviamos para dar de alta (coincide con SolicitudRequest en Spring Boot).
+// No incluye el solicitante: el servidor lo toma del usuario autenticado.
 export interface NuevaSolicitud {
   titulo: string;
   descripcion: string;
-  solicitante: string;
 }
+
+export const ESTADOS: EstadoSolicitud[] = ['PENDIENTE', 'EN_CURSO', 'RESUELTA'];
 
 // Texto que se muestra al usuario para cada estado
 export const TEXTO_ESTADO: Record<EstadoSolicitud, string> = {

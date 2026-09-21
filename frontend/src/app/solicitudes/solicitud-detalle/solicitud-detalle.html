@@ -8,12 +8,26 @@
     <dt>Solicitante</dt>
     <dd>{{ s.solicitante }}</dd>
     <dt>Estado</dt>
-    <dd><span class="estado" [class]="s.estado">{{ textoEstado[s.estado] }}</span></dd>
+    <dd>
+      @if (auth.esAdmin()) {
+        <!-- Solo ADMIN ve el selector. Ocultarlo NO es la protección: la protección está en el servidor. -->
+        <select #estado (change)="cambiarEstado(estado.value)" aria-label="Estado">
+          @for (opcion of estados; track opcion) {
+            <option [value]="opcion" [selected]="opcion === s.estado">{{ textoEstado[opcion] }}</option>
+          }
+        </select>
+      } @else {
+        <span class="estado" [class]="s.estado">{{ textoEstado[s.estado] }}</span>
+      }
+    </dd>
     <dt>Fecha de creación</dt>
     <dd>{{ s.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</dd>
     <dt>Descripción</dt>
     <dd>{{ s.descripcion || 'Sin descripción' }}</dd>
   </dl>
+  @if (error()) {
+    <p class="mensaje-error">{{ error() }}</p>
+  }
 } @else if (error()) {
   <p class="mensaje-error">{{ error() }}</p>
 } @else {

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 /**
  * Datos que el cliente envía para dar de alta una solicitud (POST).
  * Las anotaciones se comprueban en el servidor gracias a @Valid en el controlador.
+ * El solicitante no se recibe del cliente: se toma del usuario autenticado (token).
  */
 public record SolicitudRequest(
 
@@ -14,9 +15,5 @@ public record SolicitudRequest(
 		String titulo,
 
 		@Size(max = 1000, message = "La descripción no puede superar los 1000 caracteres")
-		String descripcion,
-
-		@NotBlank(message = "El solicitante es obligatorio")
-		@Size(max = 50, message = "El solicitante no puede superar los 50 caracteres")
-		String solicitante) {
+		String descripcion) {
 }
