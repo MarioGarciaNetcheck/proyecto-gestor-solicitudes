@@ -1,0 +1,34 @@
+<div class="cabecera">
+  <h2>Solicitudes ({{ solicitudes().length }})</h2>
+  <div>
+    <button type="button" class="boton" (click)="anadirEjemplo()">Añadir de ejemplo</button>
+    <button type="button" class="boton" (click)="vaciar()">Vaciar lista</button>
+  </div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Título</th>
+      <th>Solicitante</th>
+      <th>Estado</th>
+      <th>Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (solicitud of solicitudes(); track solicitud.id) {
+      <tr>
+        <td>{{ solicitud.id }}</td>
+        <td>{{ solicitud.titulo }}</td>
+        <td>{{ solicitud.solicitante }}</td>
+        <td><span class="estado" [class]="solicitud.estado">{{ textoEstado[solicitud.estado] }}</span></td>
+        <td>{{ solicitud.fechaCreacion | date: 'dd/MM/yyyy HH:mm' }}</td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="5">No hay solicitudes.</td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -1,1 +1,167 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales del Gestor de solicitudes. Sencillos a propósito: el curso no trata de diseño. */
+
+:root {
+  --azul: #0b4f8a;
+  --azul-claro: #e8f0f8;
+  --gris: #5f6b76;
+  --borde: #d5dbe1;
+  --rojo: #b3261e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Aptos, 'Segoe UI', Roboto, Arial, sans-serif;
+  color: #1f2933;
+  background: #f7f9fb;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--azul);
+  color: white;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+header nav a {
+  color: white;
+  margin-left: 1rem;
+}
+
+main {
+  max-width: 960px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+}
+
+a {
+  color: var(--azul);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th,
+td {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+}
+
+th {
+  background: var(--azul-claro);
+}
+
+.estado {
+  padding: 0.15rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  background: #eceff1;
+}
+
+.estado.PENDIENTE {
+  background: #fff4d6;
+}
+
+.estado.EN_CURSO {
+  background: #dcebfb;
+}
+
+.estado.RESUELTA {
+  background: #dff3e4;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 560px;
+  gap: 0.35rem;
+}
+
+label {
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  padding: 0.5rem;
+  font: inherit;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+}
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
+  border-color: var(--rojo);
+}
+
+.boton {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background: var(--azul);
+  color: white;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+form .boton {
+  align-self: flex-start;
+  margin-top: 1rem;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.mensaje-error {
+  margin: 0.25rem 0;
+  color: var(--rojo);
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1.5rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid var(--borde);
+}
+
+dt {
+  font-weight: 600;
+  color: var(--gris);
+}
+
+dd {
+  margin: 0;
+}
+
+.cabecera .boton + .boton {
+  margin-left: 0.5rem;
+}
