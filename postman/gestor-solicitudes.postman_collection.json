@@ -1,0 +1,51 @@
+{
+  "info": {
+    "name": "Gestor de solicitudes",
+    "description": "Peticiones del curso Spring Boot + Angular (antes de añadir seguridad).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "1. Saludo",
+      "request": { "method": "GET", "url": "{{base}}/api/saludo" }
+    },
+    {
+      "name": "2. Solicitudes",
+      "item": [
+        {
+          "name": "Listar",
+          "request": { "method": "GET", "url": "{{base}}/api/solicitudes" }
+        },
+        {
+          "name": "Obtener por id",
+          "request": { "method": "GET", "url": "{{base}}/api/solicitudes/1" }
+        },
+        {
+          "name": "Obtener id inexistente (404)",
+          "request": { "method": "GET", "url": "{{base}}/api/solicitudes/9999" }
+        },
+        {
+          "name": "Alta",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Cambio de teclado\",\n  \"descripcion\": \"Faltan teclas en el puesto 7.\",\n  \"solicitante\": \"luis\"\n}" },
+            "url": "{{base}}/api/solicitudes"
+          }
+        },
+        {
+          "name": "Alta con datos no válidos (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"Sin título\",\n  \"solicitante\": \"\"\n}" },
+            "url": "{{base}}/api/solicitudes"
+          }
+        }
+      ]
+    }
+  ]
+}
