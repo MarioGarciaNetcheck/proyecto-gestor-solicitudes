@@ -2,11 +2,15 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('gestor-solicitudes-web');
+  saludo = signal('');
+
+  async saludar(nombre: string) {
+    const r = await fetch('http://localhost:8080/api/hola?nombre=' + nombre);
+    const datos = await r.json();
+    this.saludo.set(datos.mensaje);
+  }
 }
